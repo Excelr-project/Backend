@@ -1,18 +1,20 @@
 package com.example.Backend.service;
 
+import com.example.Backend.Dto.BookingDetails;
 import com.example.Backend.Dto.BookingRequestDTO;
 import com.example.Backend.Entity.Booking;
 import com.example.Backend.Entity.User;
 import com.example.Backend.repository.BookingRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static lombok.extern.java.Log.*;
 
@@ -23,7 +25,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final SigninService signinService;
     private final CarService carService;
-//    private final User user;
+    private final JavaMailSender javaMailSender;
 
 
 
@@ -38,39 +40,53 @@ public class BookingService {
 
             Booking booking = new Booking();
             booking.setUser(userOptional.get());
-            booking.setFromPlace(requestDTO.getFromPlace());
-            booking.setToPlace(requestDTO.getToPlace());
+            booking.setPlace(requestDTO.getPlace());
             booking.setFromDate(requestDTO.getFromDate());
             booking.setToDate(requestDTO.getToDate());
             booking.setTotalrent(totalrent);
             bookingRepository.save(booking);
+
+            sendBookingConfirmation(userOptional.get(), booking);
 
             return totalrent;
         }
         return null;
     }
 
-//    public Optional<Booking> getUserBookings(BookingRequestDTO bookingRequestDTO){
-//
-//        Integer userId = bookingRequestDTO.getUser();
-//        Optional<User> user = signinService.getUserById(userId);
-//
-//        if (user.isPresent()){
-//            return bookingRepository.findById(Long.valueOf(userId));
-//        }
-//        return null;
-//    }
+    private void sendBookingConfirmation(User user, Booking booking){
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        try{
+            helper.setTo(user.getEmail());
+            helper.setText("Booking Confirmed !");
+            helper.setText("Hello dear" + user.getFirstname() + ".\n\nThanks for booking car on our website, We are happy to inform that your booking has confirmed!\n" + "Find Details below:\n" +
+                    "From Place : "+ booking.getPlace() +  "\nFrom Date : " + booking.getFromDate() +
+                    "\nTo Date : " + booking.getToDate() + "\n Total Amount :" + booking.getTotalrent());
 
-
-    public List<Booking> getUserBookings(Integer userId){
-        Optional<User> userOptional = signinService.getUserById(userId);
-
-        if (userOptional.isPresent()){
-            return bookingRepository.findByUserId(userId);
-
+            javaMailSender.send(message);
+        } catch (MessagingException e){
+            e.printStackTrace();
         }
+    }
 
-        return Collections.emptyList();
+
+
+
+    public List<BookingDetails> getUserBookings(Integer userId){
+        List<Booking> bookings = bookingRepository.findByUserId(userId);
+        List<BookingDetails> bookingDetails = new ArrayList<>();
+        for (Booking booking :  bookings){
+            BookingDetails bookingDetail = new BookingDetails();
+            bookingDetail.setUserId(booking.getUser().getId());
+            bookingDetail.setCarId(Math.toIntExact(booking.getId()));
+            bookingDetail.setPlace(booking.getPlace());
+//            bookingDetail.setToPlace(booking.getToPlace());
+            bookingDetail.setFromDate(booking.getFromDate());
+            bookingDetail.setToDate(booking.getToDate());
+            bookingDetail.setTotalRent(booking.getTotalrent());
+            bookingDetails.add(bookingDetail);
+        }
+        return bookingDetails;
     }
 
     public long calculateNumberOfDays(Date fromDate, Date toDate){

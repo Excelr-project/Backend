@@ -22,11 +22,7 @@ public class Booking {
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
-    @Column(nullable = false)
-    private String fromPlace;
-
-    @Column(nullable = false)
-    private String toPlace;
+    private String Place;
 
     @Column(nullable = false)
     private Date fromDate;
@@ -39,6 +35,4 @@ public class Booking {
 
     @Column(nullable = false)
     private boolean cancelled;
-
-
 }

@@ -25,7 +25,7 @@ public class Car {
     @Column(nullable = false)
     private String model;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String color;
 
     @Column(nullable = false)
@@ -33,4 +33,11 @@ public class Car {
 
     @Column(nullable = false)
     public Integer rentPerDay;
+
+    @Column(nullable = false)
+    private boolean available;
+
+    @ManyToOne
+    @JoinColumn(name = "city", nullable = false)
+    private City city;
 }
