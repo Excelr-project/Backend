@@ -2,8 +2,10 @@ package com.example.Backend.controller;
 
 import com.example.Backend.Dto.BookingDetails;
 import com.example.Backend.Dto.BookingRequestDTO;
+import com.example.Backend.Entity.Booking;
 import com.example.Backend.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,23 +15,28 @@ import java.util.List;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
 
 
+    @Autowired
     private final BookingService bookingService;
-    private final BookingRequestDTO bookingRequestDTO;
-
     @PostMapping("/bookcar")
     public ResponseEntity<String> bookCar(@RequestBody BookingRequestDTO requestDTO){
 
         Double totalrent = bookingService.bookCar(requestDTO);
 
         if (totalrent != null){
-            return ResponseEntity.ok("Booking Succesfull. Total rent :" + totalrent);
+            return ResponseEntity.status(HttpStatus.OK).body("Booking Succesfull. Total rent :" + totalrent);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Booking failed");
         }
     }
+
+//    @GetMapping("/cars")
+//    public ResponseEntity<searchCar> getCars(@RequestBody searchCar searchcar){
+//        List<Car> cars = bookingService.getCars(searchcar);
+//    }
 
 
     @RequestMapping("/bookings/{userId}")
@@ -45,13 +52,13 @@ public class BookingController {
     }
 
 
-    @DeleteMapping("/cancel/{userId}")
-    public ResponseEntity<String> cancelBooking(@PathVariable Integer userId){
-//        Integer userId = user.id;
-        boolean cancelled = bookingService.cancelBooking(userId);
+    @DeleteMapping("/cancel/{bookingid}")
+    public ResponseEntity<String> cancelBooking(@PathVariable("bookingid") Integer bookingid){
+        boolean cancelled = bookingService.cancelBooking(bookingid);
 
         if (cancelled){
-            return ResponseEntity.ok("Booking Cancelled for" + userId);
+            List<Booking> activeBookings = bookingService.getActiveBookings();
+            return ResponseEntity.ok("Remaining Bookings :" + activeBookings);
 
         } else {
             return ResponseEntity.notFound().build();

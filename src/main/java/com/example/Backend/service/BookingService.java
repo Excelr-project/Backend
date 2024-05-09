@@ -8,20 +8,20 @@ import com.example.Backend.repository.BookingRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-
-import static lombok.extern.java.Log.*;
 
 @Service
 @RequiredArgsConstructor
 public class BookingService {
 
+    @Autowired
     private final BookingRepository bookingRepository;
     private final SigninService signinService;
     private final CarService carService;
@@ -41,9 +41,10 @@ public class BookingService {
             Booking booking = new Booking();
             booking.setUser(userOptional.get());
             booking.setPlace(requestDTO.getPlace());
-            booking.setFromDate(requestDTO.getFromDate());
-            booking.setToDate(requestDTO.getToDate());
+            booking.setFromDate((Timestamp) requestDTO.getFromDate());
+            booking.setToDate((Timestamp) requestDTO.getToDate());
             booking.setTotalrent(totalrent);
+            booking.setCarid(requestDTO.getCar_id());
             bookingRepository.save(booking);
 
             sendBookingConfirmation(userOptional.get(), booking);
@@ -52,6 +53,7 @@ public class BookingService {
         }
         return null;
     }
+
 
     private void sendBookingConfirmation(User user, Booking booking){
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -77,10 +79,9 @@ public class BookingService {
         List<BookingDetails> bookingDetails = new ArrayList<>();
         for (Booking booking :  bookings){
             BookingDetails bookingDetail = new BookingDetails();
+            bookingDetail.setId(booking.getId());
             bookingDetail.setUserId(booking.getUser().getId());
             bookingDetail.setCarId(Math.toIntExact(booking.getId()));
-            bookingDetail.setPlace(booking.getPlace());
-//            bookingDetail.setToPlace(booking.getToPlace());
             bookingDetail.setFromDate(booking.getFromDate());
             bookingDetail.setToDate(booking.getToDate());
             bookingDetail.setTotalRent(booking.getTotalrent());
@@ -95,16 +96,26 @@ public class BookingService {
     }
 
 
-    public boolean cancelBooking(Integer userId){
-        List<Booking> bookings = bookingRepository.findByUserId(userId);
-        if (!bookings.isEmpty()){
-            for (Booking booking : bookings){
-                booking.setCancelled(true);
-                bookingRepository.save(booking);
-            }
-            bookingRepository.deleteAll(bookings);
+    public boolean cancelBooking(Integer bookingid){
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingid);
+        if (optionalBooking.isPresent()){
+            Booking booking = optionalBooking.get();
+            booking.setCancelled(true);
+            bookingRepository.save(booking);
+            bookingRepository.delete(booking);
             return true;
         }
         return false;
     }
+
+    public List<Booking> getActiveBookings(){
+        return bookingRepository.findByCancelledFalse();
+    }
+
+
+//    public boolean checkCarAvailability(Integer id, Timestamp fromDate, Timestamp toDate){
+//        List<Booking> overlapbookings = bookingRepository.findOverlappingBookings(id, fromDate, toDate);
+//
+//        return overlapbookings.isEmpty();
+//    }
 }

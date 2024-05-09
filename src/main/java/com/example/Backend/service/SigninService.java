@@ -15,18 +15,31 @@ public class SigninService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
-    public  boolean signinUser(String email, String password){
+//    public  boolean signinUser(String email, String password){
+//
+//        Optional<User> optionaluser = userRepository.findByEmail(email);
+//
+//        if (optionaluser.isPresent()){
+//            User user = optionaluser.get();
+//
+//            if (passwordEncoder.matches(password, user.getPassword())){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
-        Optional<User> optionaluser = userRepository.findByEmail(email);
+    public Optional<User> signinUser(String email, String password) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-        if (optionaluser.isPresent()){
-            User user = optionaluser.get();
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
 
-            if (passwordEncoder.matches(password, user.getPassword())){
-                return true;
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return Optional.of(user);
             }
         }
-        return false;
+        return Optional.empty();
     }
 
 

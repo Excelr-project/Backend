@@ -1,21 +1,19 @@
-package com.example.Backend.Dto;
+package com.example.Backend.controller;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Data
-@RequiredArgsConstructor
 @Component
-public class BookingDetails {
+@RequiredArgsConstructor
+public class searchCar {
 
-    private Integer id;
     private Integer userId;
-    private Integer carId;
-    private String Place;
+    private String place;
     private Date fromDate;
     private Date toDate;
-    private double totalRent;
 }

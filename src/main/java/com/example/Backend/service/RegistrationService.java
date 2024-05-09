@@ -21,18 +21,18 @@ public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public String registerUser(User user){
+    public Integer registerUser(User user) throws ExistingEntityException{
 
         Optional<User> optionaluser = userRepository.findByEmail(user.getEmail());
 
         if (optionaluser.isPresent()){
-            throw  new ExistingEntityException("User with email id already Exists!");
+            throw new ExistingEntityException("User with email id already Exists!");
         }
         else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
+            User saveduser = userRepository.save(user);
             log.info("User with email {} registered succesfully", user.getEmail());
-            return "Registration Succesfull";
+            return saveduser.getId();
         }
     }
 
@@ -45,7 +45,6 @@ public class RegistrationService {
             String encodedPassword = passwordEncoder.encode(newPassword);
             userRepository.save(user1);
         }
-
     }
 
     public Optional<User> findByEmail(String email){

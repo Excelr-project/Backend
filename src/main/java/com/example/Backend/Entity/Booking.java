@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -16,23 +17,27 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
+    @Column
     private String Place;
 
     @Column(nullable = false)
-    private Date fromDate;
+    private Timestamp fromDate;
 
     @Column(nullable = false)
-    private Date toDate;
+    private Timestamp toDate;
 
     @Column(nullable = false)
     private double totalrent;
 
     @Column(nullable = false)
     private boolean cancelled;
+
+    @Column(nullable = false)
+    private Integer Carid;
 }
