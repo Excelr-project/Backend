@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,11 @@ import java.util.Optional;
     Optional<Booking> findById(Integer bookingid);
 
     List<Booking> findByCancelledFalse();
+
+//    @Query("SELECT b FROM Booking b WHERE b.carid= :Carid " + "AND ((b.from_date >= :fromDate AND b.from_date <= :toDate) " + "OR (b.to_date >= :fromDate AND b.to_date <= :toDate))")
+//    Optional<List<Booking>> findByCarIdAndFromDateBeforeAndToDateAfter(int Carid, Timestamp toDate, Timestamp fromDate);
+
+//    List<Booking> findByCarIdAndFromDateAfterAndToDateBefore(int carid, Timestamp fromDate, Timestamp toDate);
 
 
 //    @Query("SELECT b FROM Booking b WHERE b.id= :id " + "AND ((b.fromDate >= :fromDate AND b.fromDate <= :toDate) " + "OR (b.toDate >= :fromDate AND b.toDate <= :toDate))")

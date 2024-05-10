@@ -3,6 +3,7 @@ package com.example.Backend.controller;
 import com.example.Backend.Dto.BookingDetails;
 import com.example.Backend.Dto.BookingRequestDTO;
 import com.example.Backend.Entity.Booking;
+import com.example.Backend.repository.BookingRepository;
 import com.example.Backend.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +22,19 @@ public class BookingController {
 
     @Autowired
     private final BookingService bookingService;
+
     @PostMapping("/bookcar")
     public ResponseEntity<String> bookCar(@RequestBody BookingRequestDTO requestDTO){
+
 
         Double totalrent = bookingService.bookCar(requestDTO);
 
         if (totalrent != null){
             return ResponseEntity.status(HttpStatus.OK).body("Booking Succesfull. Total rent :" + totalrent);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Booking failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Car is already booked");
         }
     }
-
-//    @GetMapping("/cars")
-//    public ResponseEntity<searchCar> getCars(@RequestBody searchCar searchcar){
-//        List<Car> cars = bookingService.getCars(searchcar);
-//    }
 
 
     @RequestMapping("/bookings/{userId}")

@@ -6,6 +6,10 @@ import org.springframework.mail.javamail.*;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -18,6 +22,10 @@ public class AdminService {
 
     private static final String Admin_email = "tharun.project.123@gmail.com";
 
+    private static final long KEY_VALID_TIME = 5;
+
+    private static Map<String, LocalDateTime> generatedKeys = new HashMap<>();
+
     public String generateAndSendKey(String email){
 
         if (email.equals(Admin_email)){
@@ -25,6 +33,7 @@ public class AdminService {
             boolean sent = sendKeyByEmail(email, key);
 
             if (sent){
+                generatedKeys.put(key, LocalDateTime.now());
                 return key;
             }
         }
@@ -49,13 +58,21 @@ public class AdminService {
             helper.setTo(email);
             helper.setSubject("Your Generated Key");
             helper.setText("Generated key is :" + key);
-
             javaMailSender.send(message);
-
             return true;
         } catch (Exception e){
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean isKeyValid(String key){
+        LocalDateTime generationTime = generatedKeys.get(key);
+        if (generationTime != null){
+            LocalDateTime currentTime = LocalDateTime.now();
+            long minutesRemain = generationTime.until(currentTime, ChronoUnit.MINUTES);
+            return minutesRemain <= KEY_VALID_TIME;
+        }
+        return false;
     }
 }

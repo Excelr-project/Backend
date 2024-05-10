@@ -43,7 +43,7 @@ public class SigninService {
     }
 
 
-    public Optional<User> getUserById(Integer id){
+    public Optional<User> getuserById(Integer id){
         return userRepository.findById(id);
     }
 }

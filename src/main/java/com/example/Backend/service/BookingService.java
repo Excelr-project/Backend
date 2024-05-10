@@ -31,18 +31,22 @@ public class BookingService {
 
     public Double bookCar(BookingRequestDTO requestDTO){
 
-        Optional<User> userOptional = signinService.getUserById(requestDTO.getUserId());
+        List<Booking> existingBookings = bookingRepository.findAll();
+        boolean isAvailable = isCarAvailable(requestDTO, existingBookings);
 
-        if (userOptional.isPresent()){
-            long noofdays = calculateNumberOfDays(requestDTO.getFromDate(), requestDTO.getToDate());
-            double rentPerDay = carService.getRentPerDay(Math.toIntExact(requestDTO.getCar_id()));
-            double totalrent = noofdays * rentPerDay;
+        if (!isAvailable){
+            return null;
+            }
+        Optional<User> userOptional = signinService.getuserById(requestDTO.getUserId());
+        long noofdays = calculateNumberOfDays(requestDTO.getFromDate(), requestDTO.getToDate());
+        double rentPerDay = carService.getRentPerDay(Math.toIntExact(requestDTO.getCar_id()));
+        double totalrent = noofdays * rentPerDay;
 
-            Booking booking = new Booking();
-            booking.setUser(userOptional.get());
-            booking.setPlace(requestDTO.getPlace());
-            booking.setFromDate((Timestamp) requestDTO.getFromDate());
-            booking.setToDate((Timestamp) requestDTO.getToDate());
+        Booking booking = new Booking();
+        booking.setUser(userOptional.get());
+        booking.setFrom_Place(requestDTO.getFrom_Place());
+        booking.setFromDate((Timestamp) requestDTO.getFromDate());
+        booking.setToDate((Timestamp) requestDTO.getToDate());
             booking.setTotalrent(totalrent);
             booking.setCarid(requestDTO.getCar_id());
             bookingRepository.save(booking);
@@ -50,8 +54,7 @@ public class BookingService {
             sendBookingConfirmation(userOptional.get(), booking);
 
             return totalrent;
-        }
-        return null;
+
     }
 
 
@@ -62,7 +65,7 @@ public class BookingService {
             helper.setTo(user.getEmail());
             helper.setText("Booking Confirmed !");
             helper.setText("Hello dear" + user.getFirstname() + ".\n\nThanks for booking car on our website, We are happy to inform that your booking has confirmed!\n" + "Find Details below:\n" +
-                    "From Place : "+ booking.getPlace() +  "\nFrom Date : " + booking.getFromDate() +
+                    "From Place : "+ booking.getFrom_Place() +  "\nFrom Date : " + booking.getFromDate() +
                     "\nTo Date : " + booking.getToDate() + "\n Total Amount :" + booking.getTotalrent());
 
             javaMailSender.send(message);
@@ -80,6 +83,7 @@ public class BookingService {
         for (Booking booking :  bookings){
             BookingDetails bookingDetail = new BookingDetails();
             bookingDetail.setId(booking.getId());
+            bookingDetail.setPlace(booking.getFrom_Place());
             bookingDetail.setUserId(booking.getUser().getId());
             bookingDetail.setCarId(Math.toIntExact(booking.getId()));
             bookingDetail.setFromDate(booking.getFromDate());
@@ -113,9 +117,31 @@ public class BookingService {
     }
 
 
-//    public boolean checkCarAvailability(Integer id, Timestamp fromDate, Timestamp toDate){
-//        List<Booking> overlapbookings = bookingRepository.findOverlappingBookings(id, fromDate, toDate);
-//
-//        return overlapbookings.isEmpty();
+    public boolean isCarAvailable(BookingRequestDTO requestDTO, List<Booking> existingBookings) {
+        return existingBookings.stream()
+                .filter(existingBooking -> existingBooking.getCarid() == requestDTO.getCar_id())
+                .noneMatch(existingBooking ->
+                        (requestDTO.getFromDate().before(existingBooking.getToDate()) && requestDTO.getToDate().after(existingBooking.getFromDate()))
+                                || (requestDTO.getFromDate().equals(existingBooking.getFromDate()) && requestDTO.getToDate().equals(existingBooking.getToDate()))
+
+                );
+    }
+
+
+//    public boolean isCarAvailable(BookingRequestDTO requestDTO, List<Booking> existingBookings) {
+//        return existingBookings.stream()
+//                .noneMatch(existingBooking ->
+//                        // Check for exact date overlaps
+//                        requestDTO.getFromDate().equals(existingBooking.getFromDate()) && requestDTO.getToDate().equals(existingBooking.getToDate())
+//                                // Check for booking starting before requested period and ending within
+//                                || (requestDTO.getFromDate().before(existingBooking.getFromDate()) && requestDTO.getToDate().after(existingBooking.getFromDate()))
+//                                // Check for booking starting after requested period and ending within
+//                                || (requestDTO.getFromDate().after(existingBooking.getFromDate()) && requestDTO.getFromDate().before(existingBooking.getToDate()))
+//                                // Additional checks for edge cases (all-day bookings)
+//                                || (requestDTO.getFromDate().equals(existingBooking.getToDate()) && requestDTO.getToDate().equals(existingBooking.getFromDate()))
+//                                || (requestDTO.getFromDate().equals(existingBooking.getFromDate()) && requestDTO.getToDate().equals(existingBooking.getToDate()))
+//                );
 //    }
+
+
 }

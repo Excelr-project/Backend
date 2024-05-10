@@ -16,8 +16,8 @@ import java.util.Date;
 @Component
 public class BookingRequestDTO {
     private Integer userId;
-    private String Place;
+    private String from_Place;
     private Timestamp fromDate;
     private Timestamp toDate;
-    private Integer car_id;
+    private int car_id;
 }

@@ -21,7 +21,8 @@ public class AdminController {
 
     @PostMapping("/signin")
     public ResponseEntity<String> signin(@RequestParam(value = "email", required = true) String email, @RequestParam(value = "key", required = true) String key){
-        if (adminSigninService.signinAdmin(email, key)){
+        if (adminService.isKeyValid(key)){
+            adminSigninService.signinAdmin(email, key);
             return ResponseEntity.ok("Signin Succesful");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or key");
@@ -41,8 +42,4 @@ public class AdminController {
     }
 
 
-//    @GetMapping("/bookings")
-//    public List<Booking> getBookings(){
-//        return ad.getUserBookings();
-//    }
 }

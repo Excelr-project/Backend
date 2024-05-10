@@ -24,7 +24,7 @@ public class Booking {
     private User user;
 
     @Column
-    private String Place;
+    private String from_Place;
 
     @Column(nullable = false)
     private Timestamp fromDate;
