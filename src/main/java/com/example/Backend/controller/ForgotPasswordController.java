@@ -32,7 +32,7 @@ public class ForgotPasswordController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with given email not found");
         }
         String token = tokenService.generateToken(user);
-        return ResponseEntity.ok("Password reset link sent to your email");
+        return ResponseEntity.status(HttpStatus.OK).body(token);
     }
 
 
@@ -41,13 +41,11 @@ public class ForgotPasswordController {
         String token = body.get("token");
         String newPassword = body.get("NewPassword");
         String confirmPassword = body.get("confirmPassword");
-
         Optional<User> user = tokenService.getUserFromToken(token);
 
         if (user == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token");
         }
-
         registrationService.updatePassword(user, newPassword);
         return ResponseEntity.ok("Password updated successfully");
     }

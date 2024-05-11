@@ -42,7 +42,9 @@ public class RegistrationService {
 //        userRepository.save(user);
         if (user.isPresent()){
             User user1 = user.get();
+            user1.setConfirmpassword(newPassword);
             String encodedPassword = passwordEncoder.encode(newPassword);
+            user1.setPassword(encodedPassword);
             userRepository.save(user1);
         }
     }
