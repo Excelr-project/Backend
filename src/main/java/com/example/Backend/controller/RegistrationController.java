@@ -23,8 +23,6 @@ public class RegistrationController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User user){
-//        User registereduser = registrationService.registerUser(user);
-//        return new ResponseEntity<>(registereduser, HttpStatus.CREATED);
         try {
             Integer userId = registrationService.registerUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(userId); // Use CREATED for successful creation

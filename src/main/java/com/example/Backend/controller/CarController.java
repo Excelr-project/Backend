@@ -53,21 +53,4 @@ public class CarController {
         return ResponseEntity.ok(cars);
     }
 
-//    @GetMapping("/isAvailable")
-//    public ResponseEntity<String> checkCarAvailability(@RequestParam Integer id,
-//                                                       @RequestParam(name = "fromDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromdate,
-//                                                       @RequestParam(name = "toDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate todate){
-//
-//        Timestamp fromDate = Timestamp.valueOf(fromdate.atStartOfDay());
-//        Timestamp toDate = Timestamp.valueOf(todate.atStartOfDay());
-//
-//
-//        boolean isAvailable = bookingService.checkCarAvailability(id, fromDate, toDate);
-//
-//        if (isAvailable){
-//            return ResponseEntity.status(HttpStatus.OK).body("Available");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not Available");
-//        }
-//    }
 }

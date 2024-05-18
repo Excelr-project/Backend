@@ -28,7 +28,6 @@ public class BookingService {
     private final JavaMailSender javaMailSender;
 
 
-
     public Double bookCar(BookingRequestDTO requestDTO){
 
         List<Booking> existingBookings = bookingRepository.findAll();
@@ -47,13 +46,13 @@ public class BookingService {
         booking.setFrom_Place(requestDTO.getFrom_Place());
         booking.setFromDate((Timestamp) requestDTO.getFromDate());
         booking.setToDate((Timestamp) requestDTO.getToDate());
-            booking.setTotalrent(totalrent);
-            booking.setCarid(requestDTO.getCar_id());
-            bookingRepository.save(booking);
+        booking.setTotalrent(totalrent);
+        booking.setCarid(requestDTO.getCar_id());
+        bookingRepository.save(booking);
 
-            sendBookingConfirmation(userOptional.get(), booking);
+        sendBookingConfirmation(userOptional.get(), booking);
 
-            return totalrent;
+        return totalrent;
 
     }
 
@@ -126,22 +125,5 @@ public class BookingService {
 
                 );
     }
-
-
-//    public boolean isCarAvailable(BookingRequestDTO requestDTO, List<Booking> existingBookings) {
-//        return existingBookings.stream()
-//                .noneMatch(existingBooking ->
-//                        // Check for exact date overlaps
-//                        requestDTO.getFromDate().equals(existingBooking.getFromDate()) && requestDTO.getToDate().equals(existingBooking.getToDate())
-//                                // Check for booking starting before requested period and ending within
-//                                || (requestDTO.getFromDate().before(existingBooking.getFromDate()) && requestDTO.getToDate().after(existingBooking.getFromDate()))
-//                                // Check for booking starting after requested period and ending within
-//                                || (requestDTO.getFromDate().after(existingBooking.getFromDate()) && requestDTO.getFromDate().before(existingBooking.getToDate()))
-//                                // Additional checks for edge cases (all-day bookings)
-//                                || (requestDTO.getFromDate().equals(existingBooking.getToDate()) && requestDTO.getToDate().equals(existingBooking.getFromDate()))
-//                                || (requestDTO.getFromDate().equals(existingBooking.getFromDate()) && requestDTO.getToDate().equals(existingBooking.getToDate()))
-//                );
-//    }
-
 
 }

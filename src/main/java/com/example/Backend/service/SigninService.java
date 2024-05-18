@@ -15,19 +15,6 @@ public class SigninService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
-//    public  boolean signinUser(String email, String password){
-//
-//        Optional<User> optionaluser = userRepository.findByEmail(email);
-//
-//        if (optionaluser.isPresent()){
-//            User user = optionaluser.get();
-//
-//            if (passwordEncoder.matches(password, user.getPassword())){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     public Optional<User> signinUser(String email, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(email);

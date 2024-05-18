@@ -3,6 +3,7 @@ package com.example.Backend.controller;
 import com.example.Backend.Entity.Booking;
 import com.example.Backend.service.AdminService;
 import com.example.Backend.service.AdminSigninService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,5 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to generate key");
         }
     }
-
 
 }

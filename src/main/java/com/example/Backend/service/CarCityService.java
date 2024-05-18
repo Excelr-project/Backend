@@ -20,7 +20,6 @@ public class CarCityService {
 
     @Autowired
     private CarCityRepository carCityRepository;
-
     @Autowired
     private CarRepository carRepository;
 
@@ -33,7 +32,6 @@ public class CarCityService {
         if (cityOptional.isPresent()){
             cars = carRepository.findByCity(cityOptional.get());
         }
-
         return cars;
     }
 }

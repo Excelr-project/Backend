@@ -24,12 +24,4 @@ import java.util.Optional;
 
     List<Booking> findByCancelledFalse();
 
-//    @Query("SELECT b FROM Booking b WHERE b.carid= :Carid " + "AND ((b.from_date >= :fromDate AND b.from_date <= :toDate) " + "OR (b.to_date >= :fromDate AND b.to_date <= :toDate))")
-//    Optional<List<Booking>> findByCarIdAndFromDateBeforeAndToDateAfter(int Carid, Timestamp toDate, Timestamp fromDate);
-
-//    List<Booking> findByCarIdAndFromDateAfterAndToDateBefore(int carid, Timestamp fromDate, Timestamp toDate);
-
-
-//    @Query("SELECT b FROM Booking b WHERE b.id= :id " + "AND ((b.fromDate >= :fromDate AND b.fromDate <= :toDate) " + "OR (b.toDate >= :fromDate AND b.toDate <= :toDate))")
-//    List<Booking> findOverlappingBookings(@Param("id") Integer id, @Param("fromDate") Timestamp fromDate, @Param("toDate") Timestamp toDate);
 }

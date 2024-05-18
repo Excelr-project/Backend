@@ -20,17 +20,6 @@ public class SigninController {
 
     private final SigninService signinService;
 
-//    @GetMapping()
-//    public ResponseEntity<String> signin(@RequestParam String email, @RequestParam String password) {
-//
-//        if (signinService.signinUser(email, password)) {
-//
-//            return ResponseEntity.ok(email);
-//        } else {
-//
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-//        }
-//    }
 
     @GetMapping()
     public ResponseEntity<UserDto> signin(@RequestParam String email, @RequestParam String password) {
@@ -49,26 +38,3 @@ public class SigninController {
     }
 
 }
-
-
-
-
-
-
-
-//    public ModelAndView sigininUser(@RequestBody User user){
-//        SigninService.signinUser(user);
-//
-//        String message = SigninService.signinUser(user);
-//
-//        if (message.equals("Sign-in Successful")){
-//            RedirectView redirectView = new RedirectView();
-//            redirectView.setUrl("/welcome");  // redirect to welcome page
-//            return new ModelAndView(redirectView);
-//        } else {
-//            ModelAndView maw = new ModelAndView("/signin");
-//            maw.addObject("error", "Invalid email or password");
-//            return maw;
-//        }
-//    }
-

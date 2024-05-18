@@ -37,9 +37,6 @@ public class RegistrationService {
     }
 
     public void updatePassword(Optional<User> user, String newPassword){
-//        String encodedPassword = passwordEncoder.encode(newPassword);
-//        user.setPassword(encodedPassword);
-//        userRepository.save(user);
         if (user.isPresent()){
             User user1 = user.get();
             user1.setConfirmpassword(newPassword);

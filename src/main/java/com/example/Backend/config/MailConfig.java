@@ -13,10 +13,10 @@ public class MailConfig {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");  // SMTP server host
-        mailSender.setPort(587);// SMTP server post like 587
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
         mailSender.setUsername("tharun.project.123@gmail.com");
-        mailSender.setPassword("njtgcycqtrwgwwwb");
+        mailSender.setPassword("awchcucntghrrqku");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.starttls.enable", "true");
